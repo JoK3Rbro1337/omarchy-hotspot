@@ -1,0 +1,15 @@
+[package]
+name = "omarchy-hotspot-proto"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+# Протокол помощника root (docs/SECURITY.md §2, §5). Отдельный крейт с минимумом зависимостей:
+# помощник подключает только его, а не всё ядро (D-Bus, QR, конфиг).
+[dependencies]
+serde.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true

@@ -1,0 +1,31 @@
+# Уборка после аварии: при загрузке снимает правила брандмауэра omarchy-hotspot,
+# если раздача не выключилась штатно (правила ufw переживают перезагрузку).
+# Ставится в /etc/systemd/system/ установщиком из исходников или в /usr/lib/systemd/system/
+# пакетом AUR (SECURITY.md §3.2, §8, §8.1).
+
+[Unit]
+Description=omarchy-hotspot: remove leftover firewall rules
+Documentation=https://github.com/JoK3Rbro1337/omarchy-hotspot
+After=ufw.service nftables.service
+# Уборка обязана закончиться до того, как раздача сможет включиться:
+# иначе она сняла бы правила уже работающей раздачи.
+Before=NetworkManager.service systemd-user-sessions.service
+ConditionPathExists=/usr/lib/omarchy-hotspot/omarchy-hotspot-helper
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/omarchy-hotspot/omarchy-hotspot-helper fw-clear
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectHome=yes
+# Песочница (SECURITY.md §8): корень только для чтения, кроме /etc/ufw (ufw переписывает user.rules)
+# и /run (замок помощника); nft — netlink, журнал — unix-сокет.
+ProtectSystem=strict
+# Дефис: без ufw каталога /etc/ufw нет, служба не должна из-за этого падать.
+ReadWritePaths=-/etc/ufw /run
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6
+
+[Install]
+WantedBy=multi-user.target

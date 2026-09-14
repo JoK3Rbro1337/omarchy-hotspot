@@ -1,0 +1,67 @@
+# Maintainer: JoK3Rbro1337 <https://github.com/JoK3Rbro1337>
+pkgname=omarchy-hotspot
+pkgver=0.1.0
+pkgrel=1
+pkgdesc='Wi-Fi hotspot for Omarchy: TUI window, bar icon, WPA3, device approval and firewall isolation'
+arch=('x86_64' 'aarch64')
+url='https://github.com/JoK3Rbro1337/omarchy-hotspot'
+license=('MIT')
+depends=('gcc-libs' 'glibc' 'networkmanager' 'iw' 'dnsmasq' 'nftables' 'polkit' 'libnotify' 'jq')
+makedepends=('cargo')
+optdepends=('ufw: guests keep DHCP and DNS when ufw is active (rules are added by the helper)'
+            'hyprland: floating window placed under the bar')
+# Сборка Rust уже без отладочной информации (strip в Cargo.toml) — пустой пакет -debug не нужен.
+options=('!debug')
+install=omarchy-hotspot.install
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+prepare() {
+  cd "$pkgname-$pkgver"
+  export RUSTUP_TOOLCHAIN=stable
+  cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  export RUSTUP_TOOLCHAIN=stable
+  export CARGO_TARGET_DIR=target
+  cargo build --frozen --release
+}
+
+check() {
+  cd "$pkgname-$pkgver"
+  export RUSTUP_TOOLCHAIN=stable
+  export CARGO_TARGET_DIR=target
+  cargo test --frozen --release
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+
+  install -Dm755 target/release/omarchy-hotspot "$pkgdir/usr/bin/omarchy-hotspot"
+  # Помощник с правами root: путь зашит в polkit-политике и программе (docs/SECURITY.md §8).
+  install -Dm755 target/release/omarchy-hotspot-helper "$pkgdir/usr/lib/omarchy-hotspot/omarchy-hotspot-helper"
+  install -Dm644 packaging/org.omarchy.hotspot.policy "$pkgdir/usr/share/polkit-1/actions/org.omarchy.hotspot.policy"
+
+  # Уборка правил брандмауэра при загрузке, если раздача не выключилась штатно. Включена ссылкой из пакета
+  # осознанно: это страховка защиты, а не функция по желанию (отключить можно только systemctl mask).
+  install -Dm644 packaging/omarchy-hotspot-cleanup.service "$pkgdir/usr/lib/systemd/system/omarchy-hotspot-cleanup.service"
+  install -dm755 "$pkgdir/usr/lib/systemd/system/multi-user.target.wants"
+  ln -s ../omarchy-hotspot-cleanup.service "$pkgdir/usr/lib/systemd/system/multi-user.target.wants/omarchy-hotspot-cleanup.service"
+
+  # Фоновая служба пользователя (запускается программой при включении раздачи).
+  sed 's|@BIN@|/usr/bin/omarchy-hotspot|' packaging/omarchy-hotspot.service >"$srcdir/omarchy-hotspot.service"
+  install -Dm644 "$srcdir/omarchy-hotspot.service" "$pkgdir/usr/lib/systemd/user/omarchy-hotspot.service"
+
+  # Настройка Omarchy для пользователя (правило окна, меню, значок на панели) и её удаление.
+  install -Dm755 install.sh "$pkgdir/usr/share/omarchy-hotspot/install.sh"
+  install -Dm755 uninstall.sh "$pkgdir/usr/share/omarchy-hotspot/uninstall.sh"
+  install -Dm644 manifest.json BarWidget.qml -t "$pkgdir/usr/share/omarchy-hotspot/"
+  printf '#!/bin/sh\nexec /usr/share/omarchy-hotspot/install.sh "$@"\n' >"$srcdir/omarchy-hotspot-setup"
+  printf '#!/bin/sh\nexec /usr/share/omarchy-hotspot/uninstall.sh "$@"\n' >"$srcdir/omarchy-hotspot-remove"
+  install -Dm755 "$srcdir/omarchy-hotspot-setup" "$srcdir/omarchy-hotspot-remove" -t "$pkgdir/usr/bin/"
+
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  install -Dm644 README.md "$pkgdir/usr/share/doc/$pkgname/README.md"
+}

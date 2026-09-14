@@ -1,0 +1,49 @@
+post_install() {
+  cat <<'MSG'
+==> omarchy-hotspot is installed.
+==> Each user who wants the bar icon, menu items and floating window runs (without sudo):
+      omarchy-hotspot-setup
+==> Open the window: omarchy-hotspot
+==> Before removing the package run omarchy-hotspot-remove (turns the hotspot off,
+    removes firewall rules, the network profile and the Omarchy integration).
+MSG
+}
+
+post_upgrade() {
+  cat <<'MSG'
+==> omarchy-hotspot upgraded. Run omarchy-hotspot-setup once to update the bar icon and menu.
+MSG
+}
+
+pre_remove() {
+  # Пакет уходит вместе с помощником — убрать то, что без него уже не убрать (docs/SECURITY.md §8.1).
+  # Операции помощника — прежние (fw-clear, dns-clear), новых нет. При обновлении pre_remove не вызывается.
+  nmcli=/usr/bin/nmcli
+  helper=/usr/lib/omarchy-hotspot/omarchy-hotspot-helper
+  # 1. Выключить раздачу и удалить её профиль (с паролем): включённый потом вручную, он раздавал бы
+  #    интернет без правил изоляции.
+  "$nmcli" --wait 10 connection down id omarchy-hotspot >/dev/null 2>&1 || true
+  "$nmcli" --wait 10 connection delete id omarchy-hotspot >/dev/null 2>&1 || true
+  # 2. Закрыть канал службы к помощнику: процесс root не должен пережить удаление пакета.
+  #    Не pkill -x: имя процесса обрезается до 15 символов и совпало бы с omarchy-hotspot.
+  /usr/bin/pkill -f "^$helper serve\$" >/dev/null 2>&1 || true
+  # 3. Правила снимаются, только если раздача точно погасла — как `off` (docs/SECURITY.md §10).
+  if [ -n "$("$nmcli" -g GENERAL.STATE connection show --active id omarchy-hotspot 2>/dev/null)" ]; then
+    cat <<'MSG'
+==> WARNING: the hotspot "omarchy-hotspot" is still on, so its firewall rules were kept.
+    Turn it off: nmcli connection down id omarchy-hotspot
+    Then remove the leftover ufw rules marked "omarchy-hotspot": sudo ufw status numbered
+MSG
+    return 0
+  fi
+  if [ -x "$helper" ]; then
+    "$helper" fw-clear >/dev/null 2>&1 || true
+    "$helper" dns-clear >/dev/null 2>&1 || true
+  fi
+  cat <<'MSG'
+==> The hotspot was turned off, its network profile deleted and its firewall rules removed.
+==> If you did not run omarchy-hotspot-remove first, settings (~/.config/omarchy-hotspot) and the
+    Omarchy integration stay in your home directory: bar icon, menu items and window rule
+    (between "omarchy-hotspot begin/end" markers). uninstall.sh from the source repository removes them.
+MSG
+}

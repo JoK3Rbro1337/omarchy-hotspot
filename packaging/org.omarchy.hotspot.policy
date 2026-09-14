@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+  "http://www.freedesktop.org/standards/PolicyKit/1.0/policyconfig.dtd">
+<policyconfig>
+  <vendor>omarchy-hotspot</vendor>
+  <vendor_url>https://github.com/JoK3Rbro1337/omarchy-hotspot</vendor_url>
+
+  <action id="org.omarchy.hotspot.helper">
+    <description>Manage the omarchy-hotspot firewall and Wi-Fi settings</description>
+    <description xml:lang="ru">Управление защитой и настройками раздачи Wi-Fi omarchy-hotspot</description>
+    <description xml:lang="uk">Керування захистом і налаштуваннями роздачі Wi-Fi omarchy-hotspot</description>
+    <message>Authentication is required to manage the Wi-Fi hotspot</message>
+    <message xml:lang="ru">Для управления раздачей Wi-Fi нужно подтверждение</message>
+    <message xml:lang="uk">Для керування роздачею Wi-Fi потрібне підтвердження</message>
+    <defaults>
+      <allow_any>no</allow_any>
+      <allow_inactive>no</allow_inactive>
+      <!-- Решение владельца, docs/SECURITY.md §4. Запасной вариант: auth_admin_keep -->
+      <allow_active>yes</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/lib/omarchy-hotspot/omarchy-hotspot-helper</annotate>
+  </action>
+</policyconfig>

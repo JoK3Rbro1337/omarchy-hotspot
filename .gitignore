@@ -1,0 +1,10 @@
+target/
+*.bak*
+.env
+*.swp
+
+# Файлы процесса разработки: остаются на диске, в публичный репозиторий не попадают.
+CLAUDE.md
+.claude/
+docs/PLAN.md
+docs/PROGRESS.md

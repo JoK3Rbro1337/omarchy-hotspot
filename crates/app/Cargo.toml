@@ -1,0 +1,21 @@
+[package]
+name = "omarchy-hotspot"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+omarchy-hotspot-core.workspace = true
+anyhow.workspace = true
+clap.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+rpassword = "7.5.4"
+serde.workspace = true
+serde_json.workspace = true
+ratatui = "0.30"
+crossterm = "0.29"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time", "net", "io-util", "signal"] }
+nix = { version = "0.31", features = ["user", "fs"] }
+zeroize = "1.9.0"

@@ -1,0 +1,25 @@
+[workspace]
+resolver = "3"
+members = ["crates/proto", "crates/core", "crates/app", "crates/helper"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+repository = "https://github.com/JoK3Rbro1337/omarchy-hotspot"
+
+[workspace.dependencies]
+omarchy-hotspot-core = { path = "crates/core" }
+omarchy-hotspot-proto = { path = "crates/proto" }
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+toml = "0.9"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+[profile.release]
+strip = true
+lto = "thin"

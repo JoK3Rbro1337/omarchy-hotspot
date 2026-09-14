@@ -1,0 +1,22 @@
+# Фоновая служба omarchy-hotspot: одобрение новых устройств, уведомления,
+# авто-выключение по простою. Шаблон: @BIN@ — путь к программе. install.sh ставит его в
+# ~/.config/systemd/user/ (программа в ~/.local/bin), пакет AUR — в /usr/lib/systemd/user/ (/usr/bin).
+# Запускается сама при включении раздачи, останавливается при выключении.
+
+[Unit]
+Description=omarchy-hotspot background service
+Documentation=https://github.com/JoK3Rbro1337/omarchy-hotspot
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=@BIN@ daemon
+Restart=on-failure
+RestartSec=3
+Environment=OMARCHY_HOTSPOT_LOG=info
+# NoNewPrivileges здесь ставить нельзя: служба вызывает помощника через pkexec
+# (программа с setuid), а с этим запретом pkexec не запускается.
+
+[Install]
+WantedBy=graphical-session.target
