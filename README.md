@@ -8,6 +8,12 @@
 ![Простой режим](docs/screenshots/simple.png)
 ![Продвинутый режим](docs/screenshots/advanced.png)
 
+> [!IMPORTANT]
+> **Из каталога плагинов ставится только значок на панель.** `omarchy plugin add` (и кнопка установки
+> в каталоге) копирует лишь значок. Сама программа раздачи — отдельно, одной из команд ниже:
+> `yay -S omarchy-hotspot` или `./install.sh` из этого репозитория, см. [Установка](#установка).
+> Без программы значок серый; клик по нему покажет уведомление с командой установки.
+
 ## Возможности
 
 - **Простой режим:** включить и выключить, QR-код для телефона, подключённые устройства и трафик.
@@ -71,7 +77,8 @@ cd omarchy-hotspot
 ### Только значок через каталог плагинов
 
 `omarchy plugin add https://github.com/JoK3Rbro1337/omarchy-hotspot` ставит **только значок** на панель.
-Сама программа ставится отдельно — вариантом 1 или 2 выше. Без неё значок остаётся серым и на клики не отвечает.
+Сама программа ставится отдельно — вариантом 1 или 2 выше. Без неё значок серый, а клик по нему
+показывает уведомление с командой установки и открывает эту страницу.
 
 ## Как пользоваться
 
@@ -169,6 +176,12 @@ Omarchy's system tools (Impala, bluetui).
 ![Simple mode](docs/screenshots/simple-en.png)
 ![Advanced mode](docs/screenshots/advanced-en.png)
 
+> [!IMPORTANT]
+> **The plugin catalog installs the bar icon only.** `omarchy plugin add` (and the catalog's install button)
+> copies the icon, nothing else. Install the hotspot app separately with `yay -S omarchy-hotspot` or
+> `./install.sh` from this repository — see [Install](#install). Without the app the icon stays grey
+> and a click shows a notification with the install command.
+
 ### Features
 
 - **Simple mode:** on/off, QR code for phones, connected devices and traffic.
@@ -225,7 +238,8 @@ Insertions are wrapped in `omarchy-hotspot begin` / `end` markers, each edited f
 and re-running never duplicates anything.
 
 **Icon only, from the plugin catalog.** `omarchy plugin add https://github.com/JoK3Rbro1337/omarchy-hotspot`
-installs **only the bar icon**. Install the app itself with option 1 or 2; without it the icon stays grey and does nothing.
+installs **only the bar icon**. Install the app itself with option 1 or 2; without it the icon stays grey and a
+click shows a notification with the install command and opens this page.
 
 ### Usage
 

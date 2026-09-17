@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "id": "io.github.jok3rbro1337.omarchy-hotspot",
-  "name": "Hotspot",
+  "name": "Wi-Fi Hotspot",
   "version": "0.1.0",
   "author": "JoK3Rbro1337",
   "license": "MIT",
-  "description": "Wi-Fi hotspot for Omarchy: bar icon with state and device count, click opens the hotspot window, right click turns it on or off. Needs the omarchy-hotspot app (AUR package or install.sh from this repository).",
+  "description": "Share your internet over Wi-Fi with WPA3 encryption, approval of every new device, and your PC kept unreachable from guests.",
   "kinds": [
     "bar-widget"
   ],
@@ -13,8 +13,8 @@
     "barWidget": "BarWidget.qml"
   },
   "barWidget": {
-    "displayName": "Hotspot",
-    "description": "Wi-Fi hotspot: click opens the window, right click turns it on or off. Requires the omarchy-hotspot app.",
+    "displayName": "Wi-Fi Hotspot",
+    "description": "Hotspot state and device count. Click opens the window, right click turns it on or off. Requires the omarchy-hotspot app.",
     "category": "Network",
     "allowMultiple": false,
     "defaultSection": "right"
