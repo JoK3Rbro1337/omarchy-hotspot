@@ -151,6 +151,7 @@ fn main() {
         .lang
         .as_deref()
         .and_then(Lang::parse)
+        .or_else(lang_from_config)
         .unwrap_or_else(Lang::from_env);
     let ctx = Ctx {
         lang,
@@ -186,6 +187,14 @@ fn main() {
             std::process::exit(1);
         }
     }
+}
+
+/// Язык из конфига (`language = "en"`). Ошибки чтения молчим: язык — не повод падать,
+/// про плохой конфиг всё равно скажет первая же команда, которая его читает.
+fn lang_from_config() -> Option<Lang> {
+    let path = omarchy_hotspot_core::config::config_path()?;
+    let loaded = omarchy_hotspot_core::config::load(&path).ok()?;
+    loaded.config.language.as_deref().and_then(Lang::parse)
 }
 
 fn access_what(cmd: AccessCmd) -> cli::access::AccessWhat {

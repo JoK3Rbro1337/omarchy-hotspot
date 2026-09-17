@@ -5,7 +5,6 @@
 Раздача Wi-Fi с ПК для [Omarchy](https://omarchy.org): значок на панели и компактное окно в стиле
 системных утилит Omarchy (Impala, bluetui).
 
-<!-- Скриншоты: положи картинки по этим путям. preview.png в корне — картинка для каталога плагинов Omarchy. -->
 ![Простой режим](docs/screenshots/simple.png)
 ![Продвинутый режим](docs/screenshots/advanced.png)
 
@@ -95,6 +94,10 @@ cd omarchy-hotspot
 | `omarchy-hotspot doctor` | проверить, готова ли система |
 | `omarchy-hotspot reset` | выключить и удалить всё, что создала раздача |
 
+**Язык** берётся из системного (`$LANG`). Чтобы задать свой, добавь первой строкой в
+`~/.config/omarchy-hotspot/config.toml` строку `language = "en"` (`ru`, `uk`, `en`). Разово — флаг
+`omarchy-hotspot --lang en`.
+
 ## Горячая клавиша
 
 Открой файл своих привязок клавиш:
@@ -163,8 +166,8 @@ sudo pacman -Rns omarchy-hotspot
 Wi-Fi hotspot for [Omarchy](https://omarchy.org): a bar icon and a compact window in the style of
 Omarchy's system tools (Impala, bluetui).
 
-![Simple mode](docs/screenshots/simple.png)
-![Advanced mode](docs/screenshots/advanced.png)
+![Simple mode](docs/screenshots/simple-en.png)
+![Advanced mode](docs/screenshots/advanced-en.png)
 
 ### Features
 
@@ -233,6 +236,9 @@ installs **only the bar icon**. Install the app itself with option 1 or 2; witho
   or when you click outside it (can be turned off in settings). Select text with **Shift + drag**.
 - **Terminal:** `omarchy-hotspot` (window), `open`, `on` / `off` / `toggle`, `status [--json]`, `password`, `qr`,
   `devices`, `doctor`, `reset`. Run `omarchy-hotspot --help` for everything.
+
+**Language** follows `$LANG`. To pin it, add `language = "en"` (`ru`, `uk`, `en`) as the first line of
+`~/.config/omarchy-hotspot/config.toml`, or pass `--lang en` once.
 
 ### Keyboard shortcut
 
