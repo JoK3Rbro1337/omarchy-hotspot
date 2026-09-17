@@ -163,7 +163,7 @@ mod tests {
     #[test]
     fn on_state_shows_ssid_and_badges() {
         let mut a = app();
-        a.cfg.hotspot.ssid = "JoK3R-PC".into();
+        a.cfg.hotspot.ssid = "Omarchy-PC".into();
         a.status = StatusView {
             state: HotspotState::On {
                 since: Some(SystemTime::now()),
@@ -174,7 +174,7 @@ mod tests {
         };
         let text = render(&a, 100, 30);
         assert!(text.contains("Раздача включена"));
-        assert!(text.contains("JoK3R-PC"));
+        assert!(text.contains("Omarchy-PC"));
         assert!(text.contains("WPA3"));
         assert!(text.contains("изоляция"));
     }
